@@ -1,0 +1,9 @@
+{
+  "editor.tabSize": 2,
+  "indentRainbow.colors": [
+    "rgba(140, 20, 252, .1)",
+    "rgba(0,255,255,0.09)",
+    "rgba(244, 247, 118, .2)",
+    "rgba(248, 148, 6, .3)"
+  ]
+}
