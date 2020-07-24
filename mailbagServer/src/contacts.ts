@@ -16,6 +16,7 @@ export class Worker {
     });
   }
 
+  //curl localhost:3000/contacts
   public listContacts(): Promise<IContact[]> {
     return new Promise((inResolve, inReject) => {
       this.db.find({}, (inError: Error, inDocs: IContact[]) => {
@@ -27,6 +28,8 @@ export class Worker {
       });
     });
   }
+
+  //curl -d '{"name" : "Adam brittain", "email":"adsy.britt@gmail.com"}' -H "Content-type:application/JSON" -X POST localhost:3000/contacts
 
   public addContact(inContact: IContact): Promise<IContact> {
     return new Promise((inResolve, inReject) => {
@@ -40,6 +43,7 @@ export class Worker {
     });
   }
 
+  //curl -X DELETE localhost:3000/contacts/sJKbINkpVSFQj9gf
   public deleteContact(inID: string): Promise<string> {
     return new Promise((inResolve, inReject) => {
       this.db.remove(
@@ -50,6 +54,24 @@ export class Worker {
             inReject(inError);
           } else {
             inResolve();
+          }
+        }
+      );
+    });
+  }
+
+  //curl -d '{"name" : "Adam Brittain", "email":"test@gmail.com"}' -H "Content-type:application/json" -X PUT localhost:3000/contacts/ZBHRsAmRiFVHdLt7
+  public updateContact(inID: string, inContact: IContact): Promise<number> {
+    return new Promise((inResolve, inReject) => {
+      this.db.update(
+        { _id: inID },
+        { inContact },
+        {},
+        (inError: Error | null, numReplaced: number) => {
+          if (inError || null) {
+            inReject(inError);
+          } else {
+            inResolve(numReplaced);
           }
         }
       );

@@ -109,7 +109,7 @@ var Worker = /** @class */ (function () {
                     case 3:
                         _a.sent();
                         return [2 /*return*/, []];
-                    case 4: return [4 /*yield*/, client.listMessages(inCallOptions.mailbox, "1:*", ["uid", "envelope"])];
+                    case 4: return [4 /*yield*/, client.listMessages(inCallOptions.mailbox, "1:100", ["uid", "envelope"])];
                     case 5:
                         messages = _a.sent();
                         return [4 /*yield*/, client.close()];
@@ -124,7 +124,7 @@ var Worker = /** @class */ (function () {
                                 subject: inValue.envelope.subject,
                             });
                         });
-                        return [2 /*return*/, finalMessages[0 - 100].reverse()];
+                        return [2 /*return*/, finalMessages.reverse()];
                 }
             });
         });

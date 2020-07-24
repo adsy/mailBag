@@ -92,13 +92,13 @@ app.delete(
   }
 );
 
-app.post("/mailboxes", async (inRequest: Request, inResponse: Response) => {
+app.post("/messages", async (inRequest: Request, inResponse: Response) => {
   try {
     const smtpWorker: SMTP.Worker = new SMTP.Worker(ServerInfo);
     await smtpWorker.sendMessage(inRequest.body);
     inResponse.send("message sent");
   } catch (inError) {
-    inResponse.send("error");
+    inResponse.send(inError);
   }
 });
 
@@ -134,6 +134,16 @@ app.delete(
     }
   }
 );
+
+app.put("/contacts/:id", async (inRequest: Request, inResponse: Response) => {
+  try {
+    const contactsWorker: Contacts.Worker = new Contacts.Worker();
+    await contactsWorker.updateContact(inRequest.params.id, inRequest.body);
+    inResponse.send("contact updated\n");
+  } catch (inError) {
+    inResponse.send("error");
+  }
+});
 
 app.listen(3000, () =>
   console.log(`Example app listening at http://localhost:3000`)

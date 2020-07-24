@@ -163,7 +163,7 @@ app.delete("/mailboxes/:mailbox/:id/", function (inRequest, inResponse) { return
         }
     });
 }); });
-app.post("/mailboxes", function (inRequest, inResponse) { return __awaiter(void 0, void 0, void 0, function () {
+app.post("/messages", function (inRequest, inResponse) { return __awaiter(void 0, void 0, void 0, function () {
     var smtpWorker, inError_5;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -177,7 +177,7 @@ app.post("/mailboxes", function (inRequest, inResponse) { return __awaiter(void 
                 return [3 /*break*/, 3];
             case 2:
                 inError_5 = _a.sent();
-                inResponse.send("error");
+                inResponse.send(inError_5);
                 return [3 /*break*/, 3];
             case 3: return [2 /*return*/];
         }
@@ -237,6 +237,26 @@ app.delete("/contacts/:id", function (inRequest, inResponse) { return __awaiter(
                 return [3 /*break*/, 3];
             case 2:
                 inError_8 = _a.sent();
+                inResponse.send("error");
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); });
+app.put("/contacts/:id", function (inRequest, inResponse) { return __awaiter(void 0, void 0, void 0, function () {
+    var contactsWorker, inError_9;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                contactsWorker = new Contacts.Worker();
+                return [4 /*yield*/, contactsWorker.updateContact(inRequest.params.id, inRequest.body)];
+            case 1:
+                _a.sent();
+                inResponse.send("contact updated\n");
+                return [3 /*break*/, 3];
+            case 2:
+                inError_9 = _a.sent();
                 inResponse.send("error");
                 return [3 /*break*/, 3];
             case 3: return [2 /*return*/];

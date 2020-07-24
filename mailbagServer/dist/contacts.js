@@ -29,6 +29,7 @@ var Worker = /** @class */ (function () {
             autoload: true,
         });
     }
+    //curl localhost:3000/contacts
     Worker.prototype.listContacts = function () {
         var _this = this;
         return new Promise(function (inResolve, inReject) {
@@ -42,6 +43,7 @@ var Worker = /** @class */ (function () {
             });
         });
     };
+    //curl -d '{"name" : "Adam brittain", "email":"adsy.britt@gmail.com"}' -H "Content-type:application/JSON" -X POST localhost:3000/contacts
     Worker.prototype.addContact = function (inContact) {
         var _this = this;
         return new Promise(function (inResolve, inReject) {
@@ -55,6 +57,7 @@ var Worker = /** @class */ (function () {
             });
         });
     };
+    //curl -X DELETE localhost:3000/contacts/sJKbINkpVSFQj9gf
     Worker.prototype.deleteContact = function (inID) {
         var _this = this;
         return new Promise(function (inResolve, inReject) {
@@ -64,6 +67,20 @@ var Worker = /** @class */ (function () {
                 }
                 else {
                     inResolve();
+                }
+            });
+        });
+    };
+    //curl -d '{"name" : "Adam Brittain", "email":"test@gmail.com"}' -H "Content-type:application/json" -X PUT localhost:3000/contacts/ZBHRsAmRiFVHdLt7
+    Worker.prototype.updateContact = function (inID, inContact) {
+        var _this = this;
+        return new Promise(function (inResolve, inReject) {
+            _this.db.update({ _id: inID }, { inContact: inContact }, {}, function (inError, numReplaced) {
+                if (inError || null) {
+                    inReject(inError);
+                }
+                else {
+                    inResolve(numReplaced);
                 }
             });
         });
