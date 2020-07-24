@@ -6,6 +6,7 @@ import { IServerInfo } from "./ServerInfo";
 export interface ICallOptions {
   mailbox: string;
   id?: number;
+  destination?: string;
 }
 
 export interface IMessage {
@@ -71,7 +72,7 @@ export class Worker {
     }
     const messages: any[] = await client.listMessages(
       inCallOptions.mailbox,
-      "1:*",
+      "1:100",
       ["uid", "envelope"]
     );
     await client.close();
@@ -84,6 +85,36 @@ export class Worker {
         subject: inValue.envelope.subject,
       });
     });
-    return finalMessages;
+
+    return finalMessages.reverse();
+  }
+
+  public async getMessageBody(
+    inCallOptions: ICallOptions
+  ): Promise<string | undefined> {
+    const client: any = await this.connectToServer();
+    const messages: any[] = await client.listMessages(
+      inCallOptions.mailbox,
+      inCallOptions.id,
+      ["body[]"],
+      { byUid: true }
+    );
+    const parsed: ParsedMail = await simpleParser(messages[0]["body[]"]);
+    await client.close();
+    return parsed.text;
+  }
+
+  public async deleteMessages(inCallOptions: ICallOptions): Promise<any> {
+    const client: any = await this.connectToServer();
+    console.log("here");
+    await client.moveMessages(
+      inCallOptions.mailbox,
+      inCallOptions.id,
+      inCallOptions.destination,
+
+      {
+        byUid: true,
+      }
+    );
   }
 }

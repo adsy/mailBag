@@ -62,6 +62,8 @@ var path_1 = __importDefault(require("path"));
 var express_1 = __importDefault(require("express"));
 var ServerInfo_1 = require("./ServerInfo");
 var IMAP = __importStar(require("./IMAP"));
+var SMTP = __importStar(require("./SMTP"));
+var Contacts = __importStar(require("./contacts"));
 var app = express_1.default();
 app.use(express_1.default.json());
 app.use("/", express_1.default.static(path_1.default.join(__dirname, "../../client/dist")));
@@ -113,75 +115,134 @@ app.get("/mailboxes/:mailbox", function (inRequest, inResponse) { return __await
         }
     });
 }); });
-// app.get(
-//   "/mailboxes/:mailbox/:id",
-//   async (inRequest: Request, inResponse: Response) => {
-//     try {
-//       const imapWorker: IMAP.Worker = new IMAP.Worker(ServerInfo);
-//       const messageBody: string = await imapWorker.getMessageBody({
-//         mailbox: inRequest.params.mailbox,
-//         id: parseInt(inRequest.params.id, 10),
-//       });
-//       inResponse.json(messageBody);
-//     } catch (inError) {
-//       inResponse.send("error");
-//     }
-//   }
-// );
-// app.delete(
-//   "/mailboxes/:mailbox/:id",
-//   async (inRequest: Request, inResponse: Response) => {
-//     try {
-//       const imapWorker: IMAP.Worker = new IMAP.Worker(ServerInfo);
-//       await imapWorker.deleteMessage({
-//         mailbox: inRequest.params.mailbox,
-//         id: parseInt(inRequest.params.id, 10),
-//       });
-//       inResponse.send("message deleted");
-//     } catch (inError) {
-//       inResponse.send("error");
-//     }
-//   }
-// );
-// app.post("/mailboxes", async (inRequest: Request, inResponse: Response) => {
-//   try {
-//     const smtpWorker: SMTP.Worker = new SMTP.Worker(ServerInfo);
-//     await smtpWorker.sendMessage(inRequest.body);
-//     inResponse.send("message sent");
-//   } catch (inError) {
-//     inResponse.send("error");
-//   }
-// });
-// app.get("/contacts", async (inRequest: Request, inResponse: Response) => {
-//   try {
-//     const contactsWorker: Contacts.worker = new Contacts.Worker();
-//     const contacts: IContact[] = await contactsWorker.listContacts();
-//     inResponse.json(contacts);
-//   } catch (inError) {
-//     inResponse.send("error");
-//   }
-// });
-// app.post("/contacts", async (inRequest: Request, inResponse: Response) => {
-//   try {
-//     const contactsWorker: Contacts.worker = new Contacts.Worker();
-//     const contact: IContact = await contactsWorker.addContact(inRequest.body);
-//     inResponse.json(contact);
-//   } catch (inError) {
-//     inResponse.send("error");
-//   }
-// });
-// app.delete(
-//   "/contacts/:id",
-//   async (inRequest: Request, inResponse: Response) => {
-//     try {
-//       const contactsWorker: Contacts.worker = new Contacts.Worker();
-//       await contactsWorker.deleteContact(inRequest.params.id);
-//       inResponse.send("contact deleted");
-//     } catch (inError) {
-//       inResponse.send("error");
-//     }
-//   }
-// );
+app.get("/mailboxes/:mailbox/:id", function (inRequest, inResponse) { return __awaiter(void 0, void 0, void 0, function () {
+    var imapWorker, messageBody, inError_3;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                imapWorker = new IMAP.Worker(ServerInfo_1.ServerInfo);
+                return [4 /*yield*/, imapWorker.getMessageBody({
+                        mailbox: inRequest.params.mailbox,
+                        id: parseInt(inRequest.params.id, 10),
+                    })];
+            case 1:
+                messageBody = _a.sent();
+                inResponse.json(messageBody);
+                return [3 /*break*/, 3];
+            case 2:
+                inError_3 = _a.sent();
+                inResponse.send("error");
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); });
+app.delete("/mailboxes/:mailbox/:id/", function (inRequest, inResponse) { return __awaiter(void 0, void 0, void 0, function () {
+    var imapWorker, inError_4;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                imapWorker = new IMAP.Worker(ServerInfo_1.ServerInfo);
+                console.log("here");
+                return [4 /*yield*/, imapWorker.deleteMessages({
+                        mailbox: inRequest.params.mailbox,
+                        id: parseInt(inRequest.params.id, 10),
+                        destination: "[Gmail]/Trash",
+                    })];
+            case 1:
+                _a.sent();
+                inResponse.send("message deleted");
+                return [3 /*break*/, 3];
+            case 2:
+                inError_4 = _a.sent();
+                inResponse.send("error");
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); });
+app.post("/mailboxes", function (inRequest, inResponse) { return __awaiter(void 0, void 0, void 0, function () {
+    var smtpWorker, inError_5;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                smtpWorker = new SMTP.Worker(ServerInfo_1.ServerInfo);
+                return [4 /*yield*/, smtpWorker.sendMessage(inRequest.body)];
+            case 1:
+                _a.sent();
+                inResponse.send("message sent");
+                return [3 /*break*/, 3];
+            case 2:
+                inError_5 = _a.sent();
+                inResponse.send("error");
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); });
+app.get("/contacts", function (inRequest, inResponse) { return __awaiter(void 0, void 0, void 0, function () {
+    var contactsWorker, contacts, inError_6;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                contactsWorker = new Contacts.Worker();
+                return [4 /*yield*/, contactsWorker.listContacts()];
+            case 1:
+                contacts = _a.sent();
+                inResponse.json(contacts);
+                return [3 /*break*/, 3];
+            case 2:
+                inError_6 = _a.sent();
+                inResponse.send("error");
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); });
+app.post("/contacts", function (inRequest, inResponse) { return __awaiter(void 0, void 0, void 0, function () {
+    var contactsWorker, contact, inError_7;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                contactsWorker = new Contacts.Worker();
+                return [4 /*yield*/, contactsWorker.addContact(inRequest.body)];
+            case 1:
+                contact = _a.sent();
+                inResponse.json(contact);
+                return [3 /*break*/, 3];
+            case 2:
+                inError_7 = _a.sent();
+                inResponse.send("error");
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); });
+app.delete("/contacts/:id", function (inRequest, inResponse) { return __awaiter(void 0, void 0, void 0, function () {
+    var contactsWorker, inError_8;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                contactsWorker = new Contacts.Worker();
+                return [4 /*yield*/, contactsWorker.deleteContact(inRequest.params.id)];
+            case 1:
+                _a.sent();
+                inResponse.send("contact deleted");
+                return [3 /*break*/, 3];
+            case 2:
+                inError_8 = _a.sent();
+                inResponse.send("error");
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); });
 app.listen(3000, function () {
     return console.log("Example app listening at http://localhost:3000");
 });

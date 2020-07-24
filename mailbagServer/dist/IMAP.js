@@ -38,6 +38,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Worker = void 0;
 var ImapClient = require("emailjs-imap-client");
+var mailparser_1 = require("mailparser");
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 var Worker = /** @class */ (function () {
     function Worker(inServerInfo) {
@@ -123,7 +124,48 @@ var Worker = /** @class */ (function () {
                                 subject: inValue.envelope.subject,
                             });
                         });
-                        return [2 /*return*/, finalMessages];
+                        return [2 /*return*/, finalMessages[0 - 100].reverse()];
+                }
+            });
+        });
+    };
+    Worker.prototype.getMessageBody = function (inCallOptions) {
+        return __awaiter(this, void 0, void 0, function () {
+            var client, messages, parsed;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.connectToServer()];
+                    case 1:
+                        client = _a.sent();
+                        return [4 /*yield*/, client.listMessages(inCallOptions.mailbox, inCallOptions.id, ["body[]"], { byUid: true })];
+                    case 2:
+                        messages = _a.sent();
+                        return [4 /*yield*/, mailparser_1.simpleParser(messages[0]["body[]"])];
+                    case 3:
+                        parsed = _a.sent();
+                        return [4 /*yield*/, client.close()];
+                    case 4:
+                        _a.sent();
+                        return [2 /*return*/, parsed.text];
+                }
+            });
+        });
+    };
+    Worker.prototype.deleteMessages = function (inCallOptions) {
+        return __awaiter(this, void 0, void 0, function () {
+            var client;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.connectToServer()];
+                    case 1:
+                        client = _a.sent();
+                        console.log("here");
+                        return [4 /*yield*/, client.moveMessages(inCallOptions.mailbox, inCallOptions.id, inCallOptions.destination, {
+                                byUid: true,
+                            })];
+                    case 2:
+                        _a.sent();
+                        return [2 /*return*/];
                 }
             });
         });
