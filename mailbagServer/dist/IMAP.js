@@ -95,7 +95,7 @@ var Worker = /** @class */ (function () {
     };
     Worker.prototype.listMessages = function (inCallOptions) {
         return __awaiter(this, void 0, void 0, function () {
-            var client, mailbox, messages, finalMessages;
+            var client, mailbox, max, messages, finalMessages;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.connectToServer()];
@@ -109,7 +109,9 @@ var Worker = /** @class */ (function () {
                     case 3:
                         _a.sent();
                         return [2 /*return*/, []];
-                    case 4: return [4 /*yield*/, client.listMessages(inCallOptions.mailbox, "1:100", ["uid", "envelope"])];
+                    case 4:
+                        max = mailbox.exists;
+                        return [4 /*yield*/, client.listMessages(inCallOptions.mailbox, max + ":" + (max - 100), ["uid", "envelope"])];
                     case 5:
                         messages = _a.sent();
                         return [4 /*yield*/, client.close()];

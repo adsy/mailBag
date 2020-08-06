@@ -12,11 +12,12 @@ import {
 //import components to add to BaseLayout
 import Toolbar from "./Toolbar";
 import MailboxList from "./mailboxList";
-// import MessageList from "./MessageList";
+import MessageList from "./messageList";
 // import WelcomeView from "./WelcomeView";
 // import MessageView from "./MessageView";
-// import ContactView from "./ContactView";
+import ContactView from "./contactsView";
 import ContactsList from "./contactsList";
+import LinearBuffer from "./LinearLoading";
 
 class BaseLayout extends Component {
   state = createState(this);
@@ -33,9 +34,7 @@ class BaseLayout extends Component {
             LOADING - PLEASE WAIT
           </DialogTitle>
           <DialogContent>
-            <DialogContentText style={{ textAlign: "center" }}>
-              ...CONTACTING SERVER...
-            </DialogContentText>
+            <LinearBuffer></LinearBuffer>
           </DialogContent>
         </Dialog>
 
@@ -47,13 +46,13 @@ class BaseLayout extends Component {
           <MailboxList state={this.state} />
         </div>
 
-        {/* <div className="centerArea">
+        <div className="centerArea">
           <div className="messageList">
             <MessageList state={this.state} />
           </div>
 
           <div className="centerViews">
-            {this.state.currentView === "welcome" && <WelcomeView />}
+            {/* {this.state.currentView === "welcome" && <WelcomeView />}
             {(this.state.currentView === "message" ||
               this.state.currentView === "compose") && (
               <MessageView state={this.state} />
@@ -61,9 +60,9 @@ class BaseLayout extends Component {
             {(this.state.currentView === "contact" ||
               this.state.currentView === "contactAdd") && (
               <ContactView state={this.state} />
-            )}
+            )} */}
           </div>
-        </div> */}
+        </div>
         <div className="contactsList">
           <ContactsList state={this.state} />
         </div>

@@ -1,6 +1,7 @@
 import * as IMAP from "./IMAP";
 import * as Contacts from "./Contacts";
 import { config } from "./config";
+import { ComponentNameToClassKey } from "@material-ui/core/styles/overrides";
 
 export function createState(inParentComponent) {
   return {
@@ -115,6 +116,60 @@ export function createState(inParentComponent) {
         subject: inMessage.subject
       });
       this.setState({ messages: cl });
+    }.bind(inParentComponent),
+
+    showContact: function(inID: string, inName: string, inEmail: string): void {
+      this.setState({
+        curretView: "contact",
+        contactID: inID,
+        contactName: inName,
+        contactEmail: inEmail
+      });
+    }.bind(inParentComponent),
+
+    fieldChangeHandler: function(inEvent: any): void {
+      console.log(inEvent);
+      if (
+        inEvent.target.id === "contactName" &&
+        inEvent.target.value.length > 16
+      ) {
+        return;
+      }
+      this.setState({ [inEvent.target.id]: inEvent.target.value });
+    }.bind(inParentComponent),
+
+    saveContact: async function(): Promise<void> {
+      const cl = this.state.contacts.slice(0);
+      this.state.showHidePleaseWait(true);
+      const contactsWorker: Contacts.Worker = new Contacts.Worker();
+      const contact: Contacts.IContact = await contactsWorker.addContact({
+        name: this.state.contactName,
+        email: this.state.contactEmail
+      });
+      this.state.showHidePleaseWait(false);
+      cl.push(contact);
+      this.setState({
+        contacts: cl,
+        contactID: null,
+        contactName: null,
+        contactEmail: null
+      });
+    }.bind(inParentComponent),
+
+    deleteContact: async function(): Promise<void> {
+      this.state.showHidePleaseWait(true);
+      const contactsWorker: Contacts.Worker = new Contacts.Worker();
+      await contactsWorker.deleteContact(this.state.contactID);
+      this.state.showHidePleaseWait(false);
+      const cl = this.state.contacts.filter(
+        inElement => inElement._id != this.state.contactID
+      );
+      this.setState({
+        contacts: cl,
+        contactID: null,
+        contactName: "",
+        contactEmail: ""
+      });
     }.bind(inParentComponent)
   };
 }

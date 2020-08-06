@@ -70,9 +70,10 @@ export class Worker {
       await client.close();
       return [];
     }
+    let max = mailbox.exists;
     const messages: any[] = await client.listMessages(
       inCallOptions.mailbox,
-      "1:100",
+      `${max}:${max - 100}`,
       ["uid", "envelope"]
     );
     await client.close();
