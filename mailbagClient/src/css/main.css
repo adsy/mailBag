@@ -30,6 +30,7 @@
 .centerArea {
   display: grid;
   grid-template-rows: 200px 1fr;
+  overflow-y: scroll;
 }
 
 .messageList {
@@ -54,4 +55,13 @@
   padding-top: 4px;
   padding-left: 4px;
   overflow: auto;
+}
+
+.messageInfoField {
+  color: #000000 !important;
+}
+
+h2 {
+  font-family: Arial;
+  color: #000000;
 }

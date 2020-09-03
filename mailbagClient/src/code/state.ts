@@ -1,7 +1,9 @@
 import * as IMAP from "./IMAP";
+import * as SMTP from "./SMTP";
 import * as Contacts from "./Contacts";
 import { config } from "./config";
 import { ComponentNameToClassKey } from "@material-ui/core/styles/overrides";
+import { SourceMapDevToolPlugin } from "webpack";
 
 export function createState(inParentComponent) {
   return {
@@ -10,7 +12,7 @@ export function createState(inParentComponent) {
     mailboxes: [],
     messages: [],
     currentView: "welcome",
-    currentMailbox: null,
+    currentMailbox: "INBOX",
     messageID: null,
     messageDate: null,
     messageFrom: null,
@@ -84,8 +86,6 @@ export function createState(inParentComponent) {
 
     setCurrentMailbox: function(inPath: String): void {
       this.setState({ currentView: "welcome", currentMailbox: inPath });
-
-      console.log(this.state.currentMailbox);
       this.state.getMessages(inPath);
     }.bind(inParentComponent),
 
@@ -127,6 +127,8 @@ export function createState(inParentComponent) {
       });
     }.bind(inParentComponent),
 
+    // This function takes in an event (like the user typing in the "to" field)
+    // and it will set that item of state to that particular value in the event
     fieldChangeHandler: function(inEvent: any): void {
       console.log(inEvent);
       if (
@@ -170,6 +172,52 @@ export function createState(inParentComponent) {
         contactName: "",
         contactEmail: ""
       });
+    }.bind(inParentComponent),
+
+    showMessage: async function(inMessage: IMAP.IMessage): Promise<void> {
+      this.state.showHidePleaseWait(true);
+      const imapWorker: IMAP.Worker = new IMAP.Worker();
+      const mb: String = await imapWorker.getMessageBody(
+        inMessage.id,
+        this.state.currentMailbox
+      );
+      this.state.showHidePleaseWait(false);
+      this.setState({
+        currentView: "message",
+        messageID: inMessage.id,
+        messageDate: inMessage.date,
+        messageFrom: inMessage.from,
+        messageTo: "",
+        messageSubject: inMessage.subject,
+        messageBody: mb
+      });
+    }.bind(inParentComponent),
+
+    sendMessage: async function(): Promise<void> {
+      this.state.showHidePleaseWait(true);
+      const smtpWorker: SMTP.Worker = new SMTP.Worker();
+      await smtpWorker.sendMessage(
+        this.state.messageTo,
+        this.state.messageFrom,
+        this.state.messageSubject,
+        this.state.messageBody
+      );
+      this.state.showHidePleaseWait(false);
+      this.setState({ currentView: "welcome" });
+    }.bind(inParentComponent),
+
+    deleteMessage: async function(): Promise<void> {
+      this.state.showHidePleaseWait(true);
+      const imapWorker: IMAP.Worker = new IMAP.Worker();
+      await imapWorker.deleteMessage(
+        this.state.messageID,
+        this.state.currentMailbox
+      );
+      this.state.showHidePleaseWait(false);
+      const cl = this.state.messages.filter(
+        inElement => inElement.id != this.state.messageID
+      );
+      this.setState({ messages: cl, currentView: "welcome" });
     }.bind(inParentComponent)
   };
 }

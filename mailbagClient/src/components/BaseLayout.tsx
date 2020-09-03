@@ -13,8 +13,8 @@ import {
 import Toolbar from "./Toolbar";
 import MailboxList from "./mailboxList";
 import MessageList from "./messageList";
-// import WelcomeView from "./WelcomeView";
-// import MessageView from "./MessageView";
+import WelcomeView from "./WelcomeView";
+import MessageView from "./MessageView";
 import ContactView from "./contactsView";
 import ContactsList from "./contactsList";
 import LinearBuffer from "./LinearLoading";
@@ -52,7 +52,7 @@ class BaseLayout extends Component {
           </div>
 
           <div className="centerViews">
-            {/* {this.state.currentView === "welcome" && <WelcomeView />}
+            {this.state.currentView === "welcome" && <WelcomeView />}
             {(this.state.currentView === "message" ||
               this.state.currentView === "compose") && (
               <MessageView state={this.state} />
@@ -60,7 +60,7 @@ class BaseLayout extends Component {
             {(this.state.currentView === "contact" ||
               this.state.currentView === "contactAdd") && (
               <ContactView state={this.state} />
-            )} */}
+            )}
           </div>
         </div>
         <div className="contactsList">

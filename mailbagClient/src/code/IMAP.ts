@@ -37,4 +37,10 @@ export class Worker {
     );
     return response.data;
   }
+
+  public async deleteMessage(inID: string, inMailbox: string) {
+    await axios.delete(
+      `${config.serverAddress}/mailboxes/${inMailbox}/${inID}`
+    );
+  }
 }

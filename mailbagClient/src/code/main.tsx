@@ -36,5 +36,5 @@ getMailboxes().then(function() {
       baseComponent.state.addContactToList(inContact);
     });
   }
-  getContacts().then(() => baseComponent.state.showHidePleaseWait(false));
+  getContacts().then(baseComponent.state.getMessages("INBOX"));
 });
